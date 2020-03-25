@@ -1,25 +1,32 @@
 package graph.edge;
-import graph.vertex.*;
-import graph.utils.*;
 
-public abstract class Edge<T> {
-  public abstract Pair<Vertex<T>, Vertex<T>> getEndPoints();
-  public abstract Vertex<T> getU();
-  public abstract Vertex<T> getV();
+import graph.utils.Pair;
+import graph.vertex.Vertex;
 
-  @Override
-  public boolean equals (Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || !(o instanceof Edge)) {
-      return false;
-    }
+public class Edge<T> {
+  Vertex<T> u;
+  Vertex<T> v;
 
-    Edge<T> edge = (Edge<T>) o;
+  public Edge (Vertex<T> u, Vertex<T> v) {
+    this.u = u;
+    this.v = v;
+  }
 
+  public Pair<Vertex<T>, Vertex<T>> getEndPoints () {
+    return new Pair<Vertex<T>,Vertex<T>>(this.u, this.v);
+  }
+
+  public Vertex<T> getU () {
+    return this.u;
+  };
+
+  public Vertex<T> getV () {
+    return this.v;
+  };
+
+  public boolean equals (Edge<T> edge) {
     return (
-      edge.getEndPoints().includes(this.getU()) ||
+      edge.getEndPoints().includes(this.getU()) &&
       edge.getEndPoints().includes(this.getV())
     );
   };

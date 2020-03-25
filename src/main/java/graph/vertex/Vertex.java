@@ -13,16 +13,18 @@ public class Vertex<T> {
 
   @Override
   public boolean equals (Object o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (o == null || o.getClass() != this.getClass()) {
-      System.out.println(o.getClass());
+    if (o == this) return true;
+    
+    if (!(o instanceof Vertex)) {
       return false;
     }
 
     Vertex<T> vertex = (Vertex<T>) o;
     return vertex.getValue().equals(this.getValue());
   };
+  
+  @Override
+  public int hashCode () {
+    return this.getValue().hashCode();
+  }
 }
