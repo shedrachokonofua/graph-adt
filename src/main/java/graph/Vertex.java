@@ -1,4 +1,4 @@
-package graph.vertex;
+package graph;
 
 public class Vertex<T> {
   private T value;
@@ -26,5 +26,9 @@ public class Vertex<T> {
   @Override
   public int hashCode () {
     return this.getValue().hashCode();
+  }
+
+  public void log () {
+    System.out.print(this.value);
   }
 }
