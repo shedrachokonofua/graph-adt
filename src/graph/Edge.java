@@ -1,6 +1,6 @@
 package graph;
 
-import graph.utils.Pair;
+import utils.Pair;
 
 public class Edge<T, E> {
   private Vertex<T> u;
@@ -45,9 +45,11 @@ public class Edge<T, E> {
   };
 
   public void log() {
+    System.out.print(" >> ");
     this.getU().log();
     System.out.print(" -> ");
     this.getV().log();
+    System.out.println();
   }
 
   @Override

@@ -1,4 +1,4 @@
-package graph.utils;
+package utils;
 
 public class Pair<T, U> {
   private T t;

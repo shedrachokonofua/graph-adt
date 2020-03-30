@@ -1,12 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
 
 import graph.AdjacencyListGraph;
 import graph.Edge;
 import graph.Vertex;
-import graph.utils.Pair;
+import utils.Pair;
 
 class Driver {
 
@@ -74,25 +76,28 @@ class Driver {
     }
   }
 
+  static void printVertexList (List<Vertex<Integer>> list) {
+    ArrayList<String> values = new ArrayList<>();
+    for (Vertex<Integer> vertex : list) {
+      values.add(Integer.toString(vertex.getValue()));
+    }
+    System.out.println(String.join(" -> ", values));
+  }
+
   void doDFS (
     AdjacencyListGraph<Integer, String> graph,
     Vertex<Integer> start
   ) {
     ArrayList<Vertex<Integer>> visited = graph.dfs(start);
-    for (Vertex<Integer> vertex : visited) {
-      System.out.print(vertex.getValue()+", ");
-    }
+    Driver.printVertexList(visited);
   }
 
   void doBFS (
     AdjacencyListGraph<Integer, String> graph,
     Vertex<Integer> start
   ) {
-    ArrayList<String> path = new ArrayList<>();
-    for (Vertex<Integer> vertex : graph.bfs(start).keySet()) {
-      path.add(Integer.toString(vertex.getValue()));
-    }
-    System.out.println(String.join(" -> ", path));
+    ArrayList<Vertex<Integer>> visited = graph.bfs(start);
+    Driver.printVertexList(visited);
   }
 
   void doPath(
@@ -104,13 +109,12 @@ class Driver {
     Integer desinationValue = input.nextInt();
 
     Vertex<Integer> destination = new Vertex<Integer>(desinationValue);
-    ArrayList<String> vertexValuePath = new ArrayList<String>(start.getValue());
-
-    for (Edge<Integer, String> edge : graph.findPath(start, destination)) {
-      vertexValuePath.add(Integer.toString(edge.getV().getValue()));
+    LinkedList<Vertex<Integer>> path = graph.findPath(start, destination);
+    if (path == null) {
+      System.out.println("Path not found");
+    } else {
+      Driver.printVertexList(path);
     }
-
-    System.out.println(String.join(" -> ", vertexValuePath));
     input.close();
   }
 

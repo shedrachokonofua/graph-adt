@@ -47,53 +47,60 @@ public abstract class Graph<T, E> {
       Iterable<Edge<T, E>> outgoingEdges = this.getOutgoingEdges(vertex);
       for(Edge<T, E> edge : outgoingEdges) {
         Vertex<T> destination = edge.getV();
-        destination.log();
         stack.push(destination);
       }
     }
     return visited;
   }
 
-  public HashMap<Vertex<T>, Edge<T, E>> bfs (Vertex<T> start) {
-    HashMap<Vertex<T>, Edge<T, E>> forest = new HashMap<Vertex<T>, Edge<T, E>>();
+  public ArrayList<Vertex<T>> bfs (Vertex<T> start) {
     ArrayList<Vertex<T>> visited = new ArrayList<Vertex<T>>();
     LinkedList<Vertex<T>> queue = new LinkedList<Vertex<T>>();
 
     queue.push(start);
-    
-    while (!queue.isEmpty()) {
+    visited.add(start);
+
+    while(!queue.isEmpty()) {
       Vertex<T> vertex = queue.poll();
-
-      if (visited.contains(vertex)) continue;
-
-      visited.add(vertex);
-
       Iterable<Edge<T, E>> outgoingEdges = this.getOutgoingEdges(vertex);
       for(Edge<T, E> edge : outgoingEdges) {
         Vertex<T> destination = edge.getV();
-  
         if (!visited.contains(destination)) {
-          forest.put(destination, edge);
           queue.push(destination);
+          visited.add(destination);
         }
       }
     }
-    
-    return forest; 
+
+    return visited;
   }
 
-  public LinkedList<Edge<T, E>> findPath (Vertex<T> origin, Vertex<T> target) {
-    HashMap<Vertex<T>, Edge<T, E>> forest = this.bfs(origin);
-    LinkedList<Edge<T, E>> queue = new LinkedList<Edge<T, E>>();
-    if (forest.containsKey(target)) {
-      Vertex<T> currentVertex = target;
+  public LinkedList<Vertex<T>> findPath (Vertex<T> origin, Vertex<T> target) {
+    ArrayList<Vertex<T>> visited = new ArrayList<Vertex<T>>();
+    Stack<LinkedList<Vertex<T>>> pathStack = new Stack<LinkedList<Vertex<T>>>();
+    LinkedList<Vertex<T>> initialPath = new LinkedList<Vertex<T>>();
+    initialPath.add(origin);
+    pathStack.push(initialPath);
 
-      while (!currentVertex.equals(origin)) {
-        Edge<T, E> edge = forest.get(currentVertex);
-        queue.addFirst(edge);
-        currentVertex = edge.getOpposite(currentVertex);
+    while (!pathStack.isEmpty()) {
+      LinkedList<Vertex<T>> currentPath = pathStack.pop();
+      Vertex<T> currentVertex = currentPath.getLast();
+
+      if (target.equals(currentVertex)) return currentPath;
+      if (visited.contains(currentVertex)) continue;
+      
+      visited.add(currentVertex);
+
+      Iterable<Edge<T, E>> outgoingEdges = this.getOutgoingEdges(currentVertex);
+      for(Edge<T, E> edge : outgoingEdges) {
+        Vertex<T> destination = edge.getV();
+        LinkedList<Vertex<T>> newPath = (LinkedList<Vertex<T>>) currentPath.clone();
+        newPath.add(destination);
+        pathStack.push(newPath);
       }
     }
-    return queue;
+
+    return null;
+    
   }
 }
