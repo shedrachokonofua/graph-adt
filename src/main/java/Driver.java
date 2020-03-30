@@ -3,20 +3,17 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import graph.*;
+import graph.AdjacencyListGraph;
+import graph.Edge;
+import graph.Vertex;
 import graph.utils.Pair;
 
 class Driver {
-  private enum Action {
-    DFS,
-    BFS,
-    PATH
-  };
 
   AdjacencyListGraph<Integer, String> graph;
   Vertex<Integer> start;
 
-  Driver (String fileName, Action action, Integer startInteger) {
+  Driver (String fileName, String action, Integer startInteger) {
     ArrayList<Pair<Integer, Integer>> pairs = this.loadFile(fileName);
 
     if (pairs == null) return;
@@ -60,18 +57,18 @@ class Driver {
   }
 
   void doAction(
-    Action action,
+    String action,
     AdjacencyListGraph<Integer, String> graph,
     Vertex<Integer> start
   ) {
     switch(action) {
-      case DFS:
+      case "DFS":
         this.doDFS(graph, start);
         break;
-      case BFS:
+      case "BFS":
         this.doBFS(graph, start);
         break;
-      case PATH:
+      case "PATH":
         this.doPath(graph, start);
         break;
     }
@@ -83,8 +80,64 @@ class Driver {
   ) {
     ArrayList<Vertex<Integer>> visited = graph.dfs(start);
     for (Vertex<Integer> vertex : visited) {
-      
+      System.out.print(vertex.getValue()+", ");
     }
+  }
+
+  void doBFS (
+    AdjacencyListGraph<Integer, String> graph,
+    Vertex<Integer> start
+  ) {
+    ArrayList<String> path = new ArrayList<>();
+    for (Vertex<Integer> vertex : graph.bfs(start).keySet()) {
+      path.add(Integer.toString(vertex.getValue()));
+    }
+    System.out.println(String.join(" -> ", path));
+  }
+
+  void doPath(
+    AdjacencyListGraph<Integer, String> graph,
+    Vertex<Integer> start
+  ) {
+    Scanner input = new Scanner(System.in);
+    System.out.print("Destination Vertex: ");
+    Integer desinationValue = input.nextInt();
+
+    Vertex<Integer> destination = new Vertex<Integer>(desinationValue);
+    ArrayList<String> vertexValuePath = new ArrayList<String>(start.getValue());
+
+    for (Edge<Integer, String> edge : graph.findPath(start, destination)) {
+      vertexValuePath.add(Integer.toString(edge.getV().getValue()));
+    }
+
+    System.out.println(String.join(" -> ", vertexValuePath));
+    input.close();
+  }
+
+  public static void main(String[] args) {
+    if (args.length < 3) {
+      System.out.println("Incomplete args");
+      return;
+    }
+
+    String fileName = args[0];
+    String action = args[1];
+    Integer start = Integer.parseInt(args[2]);
+
+    if (!isValidAction(action)) {
+      System.out.println("Invalid Action");
+      return;
+    }
+
+    new Driver(fileName, action, start);
+  }
+
+  static boolean isValidAction (String action) {
+    return (
+      action.equals("BFS") ||
+      action.equals("DFS") ||
+      action.equals("PATH")
+    );
   }
 
 }
